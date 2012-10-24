@@ -1,16 +1,85 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
     <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
-    <title>A Minimal Javascript Test Framework</title>
+    <title>HtmlBehave : an Html / Javascript BDD website</title>
     <script type="text/javascript" src="js/jquery-1.8.2.js"></script>
     <script type="text/javascript" src="js/testframework50.js"></script>
     <script type="text/javascript" src="js/assertions.js"></script>
+    <link rel="stylesheet" type="text/css" href="normalized.css"/>
+    <link rel="stylesheet" type="text/css" href="htmlbehave.css"/>
 </head>
 <body>
-<h1>Tests</h1>
-<ul id="testResults">
-</ul>
+<h1>HtmlBehave Behaviours</h1>
+<div class="story" title="User runs an htmlBehave page">
+    <h3>HtmlBehave should parse a story in this standard format</h3>
+    <h4>Narrative</h4>
+    <ol class="narrative">
+        <li>As a user of htmlBehave</li>
+        <li>I want htmlBehave to identify and run the givens and when clauses of a scenario and
+            compare the result to the then clause.</li>
+        <li>So that the system is automatically tested for me.</li>
+    </ol>
+    <h4>Acceptance Tests</h4>
+    <fieldset class="scenario" id="story1scenario1">
+        <legend>Scenario 1 : No givens, a single when, and an expected</legend>
+        <p>When a function is called that always returns 1
+        <script type="text/javascript">
+            story1scenario1 = {
+                when : function(){
+                    return 1;
+                }
+            };
+        </script>
+        </p>
+        <p>Then the expected result is <span class="expected">1</span></p>
+        Actual <span class="actual">:</span>
+    </fieldset>
+    <p> </p>
+
+    <fieldset class="scenario" id="story1scenario2">
+        <legend>Scenario 2: A given and a when and an an expected</legend>
+        <p>Given that function has already been called twice, when a function is called which
+            returns the number of previous invocations,
+            <script type="text/javascript">
+                story1scenario2 = {
+                    previousCallsToWhenCount :0,
+                    given : function(){
+                        this.when();
+                        this.when();
+                    },
+                    when : function(){
+                        return this.previousCallsToWhenCount++;
+                    }
+                }
+            </script>
+        </p>
+        <p>Then the expected result is <span class="expected">2</span></p>
+        Actual <span class="actual">:</span>
+    </fieldset>
+</div>
+
+<div id="debug"></div>
+
+<script type="text/javascript">
+    HtmlBehave = {
+        run : function(){
+            $("div.story *.scenario").each(
+                    function(){
+                        var scenario = window[this.id];
+
+                        if(scenario.given){scenario.given();}
+                        var result= scenario.when();
+
+                        $(this).children("span.actual").text("result : " + result);
+                    }
+            );
+        }
+    }
+    HtmlBehave.run();
+</script>
+
+
+
+<ul id="testResults" style="display:none;"><li><h4>Test Framework Assertions</h4></li></ul>
 </body>
 </html>
